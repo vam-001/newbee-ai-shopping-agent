@@ -89,7 +89,7 @@ redis-server --port 6379
 
 ### 4. 配置 AI 模型
 
-任选一个 **支持 Function Calling 的 OpenAI 兼容接口**：
+环境变量模板见 [.env.example](.env.example)。任选一个 **支持 Function Calling 的 OpenAI 兼容接口**：
 
 ```bash
 # 阿里云百炼（默认）
