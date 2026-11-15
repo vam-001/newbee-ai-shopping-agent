@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{mall/header::head-fragment('AI 导购','ai-chat')}"></head>
+<body>
+<header th:replace="~{mall/header::header-fragment}"></header>
+<nav th:replace="~{mall/header::nav-fragment}"></nav>
+
+<main class="ai-chat-page">
+    <div class="ai-chat-shell">
+        <aside class="ai-chat-aside">
+            <h2>小蜂 AI 导购</h2>
+            <p class="ai-chat-subtitle">找商品、比价格、查库存、问订单，都可以问我。</p>
+            <div class="quick-list">
+                <button type="button" data-question="预算 500 元以内，推荐一款适合学生党的蓝牙耳机">500 元内的蓝牙耳机</button>
+                <button type="button" data-question="推荐一款 300 元以内的机械键盘">300 元内的机械键盘</button>
+                <button type="button" data-question="有什么适合送女朋友的礼物？预算 200 元左右">200 元左右的礼物</button>
+                <button type="button" data-question="帮我查一下我的最近订单">查我的最近订单</button>
+            </div>
+            <div class="status-card">
+                <div><span>知识库</span><strong id="ragStatus">加载中…</strong></div>
+                <div><span>模型</span><strong id="modelName">-</strong></div>
+                <div><span>会话</span><strong id="sessionLabel">-</strong></div>
+            </div>
+        </aside>
+
+        <section class="ai-chat-main">
+            <div class="chat-messages" id="messages">
+                <div class="chat-message assistant">
+                    <div class="bubble">你好，我是小蜂。告诉我你想买什么，或者直接问“我的订单到哪了”。</div>
+                </div>
+            </div>
+            <div class="chat-tool-hint" id="toolHint"></div>
+            <form class="chat-input-bar" id="chatForm">
+                <textarea id="chatInput" maxlength="500" placeholder="例如：推荐一款 300 元以内的机械键盘"></textarea>
+                <button type="submit" id="sendBtn">发送</button>
+            </form>
+        </section>
+    </div>
+</main>
+
+<div th:replace="~{mall/footer::footer-fragment}"></div>
+
+<script>
+(function () {
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('chatInput');
+    const form = document.getElementById('chatForm');
+    const sendBtn = document.getElementById('sendBtn');
+    const toolHint = document.getElementById('toolHint');
+
+    let sessionId = localStorage.getItem('newbee_ai_session');
+    if (!sessionId) {
+        sessionId = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : 's-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+        localStorage.setItem('newbee_ai_session', sessionId);
+    }
+    document.getElementById('sessionLabel').textContent = sessionId.slice(0, 8);
+
+    fetch('/ai/status')
+        .then(function (response) { return response.json(); })
+        .then(function (result) {
+            const data = result.data || {};
+            document.getElementById('ragStatus').textContent = data.ragReady
+                ? ('已索引 ' + data.indexedProducts + ' 个商品')
+                : (data.indexedProducts > 0 ? '索引刷新中' : '构建中');
+            document.getElementById('modelName').textContent = data.chatModel || '-';
+            if (data.apiConfigured === false) {
+                toolHint.textContent = '提示：尚未配置 AI_API_KEY，聊天会返回配置提示。';
+            }
+        })
+        .catch(function () {});
+
+    let streaming = false;
+
+    function append(role, text) {
+        const row = document.createElement('div');
+        row.className = 'chat-message ' + role;
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.textContent = text;
+        row.appendChild(bubble);
+        messages.appendChild(row);
+        messages.scrollTop = messages.scrollHeight;
+        return bubble;
+    }
+
+    function finish(bubble) {
+        streaming = false;
+        sendBtn.disabled = false;
+        toolHint.textContent = '';
+        if (!bubble.textContent) {
+            bubble.textContent = '（没有收到回复，请稍后重试）';
+        }
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function send(message) {
+        if (streaming) {
+            return;
+        }
+        streaming = true;
+        sendBtn.disabled = true;
+        toolHint.textContent = '';
+        append('user', message);
+        const bubble = append('assistant', '');
+
+        const url = '/ai/chat/stream?message=' + encodeURIComponent(message)
+            + '&sessionId=' + encodeURIComponent(sessionId);
+        const es = new EventSource(url);
+        let closed = false;
+
+        es.addEventListener('message', function (event) {
+            bubble.textContent += event.data;
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        es.addEventListener('tool', function (event) {
+            toolHint.textContent = '正在调用工具：' + event.data;
+        });
+
+        es.addEventListener('done', function () {
+            closed = true;
+            es.close();
+            finish(bubble);
+        });
+
+        es.addEventListener('error', function (event) {
+            if (!closed) {
+                closed = true;
+                if (event.data) {
+                    bubble.textContent += (bubble.textContent ? '\n' : '') + event.data;
+                } else {
+                    bubble.textContent += (bubble.textContent ? '\n' : '') + '连接中断，请稍后重试。';
+                }
+                es.close();
+                finish(bubble);
+            }
+        });
+    }
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const value = input.value.trim();
+        if (!value) {
+            return;
+        }
+        input.value = '';
+        send(value);
+    });
+
+    document.querySelectorAll('[data-question]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            input.value = button.getAttribute('data-question');
+            input.focus();
+        });
+    });
+
+    input.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            form.requestSubmit();
+        }
+    });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.AiChatLogMapper">
+
+    <insert id="insert" parameterType="ltd.newbee.mall.ai.entity.AiChatLog"
+            useGeneratedKeys="true" keyProperty="logId">
+        INSERT INTO tb_newbee_mall_ai_chat_log
+            (user_id, session_id, question, answer, latency_ms, success)
+        VALUES
+            (#{userId}, #{sessionId}, #{question}, #{answer}, #{latencyMs}, #{success})
+    </insert>
+
+</mapper>

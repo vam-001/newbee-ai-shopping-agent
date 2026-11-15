@@ -1,6 +1,13 @@
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
+### Local development ###
+.env
+*.log
+application-local.properties
+.idea/
+.vscode/
+
 ### STS ###
 .apt_generated
 .classpath
