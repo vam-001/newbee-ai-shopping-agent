@@ -1,0 +1,18 @@
+[Unit]
+Description=NewBee AI Shopping Agent
+After=network.target mysql.service redis-server.service
+Wants=mysql.service redis-server.service
+
+[Service]
+Type=simple
+User=newbee
+Group=newbee
+WorkingDirectory=/opt/newbee-ai
+EnvironmentFile=/opt/newbee-ai/.env
+ExecStart=/usr/bin/java -Xms256m -Xmx768m -jar /opt/newbee-ai/app.jar
+Restart=always
+RestartSec=5
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

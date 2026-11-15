@@ -47,6 +47,9 @@ public class AiChatService {
         if (validationError != null) {
             throw new AiChatException(validationError);
         }
+        if (Boolean.TRUE.equals(properties.getRequireLogin()) && userId == null) {
+            throw new AiChatException("请先登录后再使用 AI 导购。");
+        }
         if (!rateLimitService.tryAcquire(clientKey)) {
             throw new AiChatException("请求太频繁，请稍后再试。");
         }

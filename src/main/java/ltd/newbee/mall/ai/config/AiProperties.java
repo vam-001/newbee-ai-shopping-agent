@@ -30,6 +30,8 @@ public class AiProperties {
     private Integer memoryTtlDays = 7;
     /** 向量索引批大小 */
     private Integer indexBatchSize = 50;
+    /** 公网部署建议开启：要求登录后才能使用 AI 导购 */
+    private Boolean requireLogin = false;
 
     public String getApiKey() {
         return apiKey;
@@ -125,5 +127,13 @@ public class AiProperties {
 
     public void setIndexBatchSize(Integer indexBatchSize) {
         this.indexBatchSize = indexBatchSize;
+    }
+
+    public Boolean getRequireLogin() {
+        return requireLogin;
+    }
+
+    public void setRequireLogin(Boolean requireLogin) {
+        this.requireLogin = requireLogin;
     }
 }

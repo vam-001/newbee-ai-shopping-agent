@@ -153,6 +153,17 @@ curl -X POST http://localhost:28089/ai/chat \
 curl -N "http://localhost:28089/ai/chat/stream?message=hello&sessionId=demo-2"
 ```
 
+## 公网部署
+
+Ubuntu 22.04 + systemd 的 IP + 端口部署步骤见 [deploy/README.md](deploy/README.md)。
+
+公网部署前务必：
+
+- 设置 `AI_REQUIRE_LOGIN=true`（只允许登录用户聊天，防止匿名刷 API 额度）
+- 只开放 22 和 28089 端口，不要暴露 MySQL/Redis
+- 修改商城后台默认管理员密码
+- 在模型厂商控制台设置消费上限
+
 ## 接口说明
 
 | 方法 | 路径 | 说明 |
