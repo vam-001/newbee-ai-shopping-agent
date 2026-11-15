@@ -1,5 +1,7 @@
 # 新蜂 AI 导购系统（NewBee AI Shopping Agent）
 
+[![CI](https://github.com/vam-001/newbee-ai-shopping-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/vam-001/newbee-ai-shopping-agent/actions/workflows/ci.yml)
+
 > 基于开源电商系统 [newbee-mall](https://github.com/newbee-ltd/newbee-mall) 二次开发，新增 **AI 导购 Agent** 模块。
 > 上游项目与本项目均以 **GPL-3.0** 开源，源文件中的上游版权头已完整保留。
 
