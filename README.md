@@ -91,7 +91,14 @@ redis-server --port 6379
 
 ### 4. 配置 AI 模型
 
-环境变量模板见 [.env.example](.env.example)。任选一个 **支持 Function Calling 的 OpenAI 兼容接口**：
+环境变量模板见 [.env.example](.env.example)。也可以直接：
+
+```bash
+cp .env.example .env   # .env 已在 .gitignore 中，不会提交
+# 编辑 .env，把 AI_API_KEY 改成真实密钥后直接 mvn spring-boot:run
+```
+
+任选一个 **支持 Function Calling 的 OpenAI 兼容接口**：
 
 ```bash
 # 阿里云百炼（默认）
