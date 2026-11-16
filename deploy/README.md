@@ -71,6 +71,8 @@ sudo DB_PASSWORD='你的数据库密码' bash setup-ubuntu.sh
 4. 安装并启动 systemd 服务 `newbee-ai`
 5. 配置 ufw 放行 22 / 28089
 
+> 演示商品图片打包在 jar 内的 `upload.zip` 中，应用首次启动会自动解压到 `/opt/newbee-ai/upload/`；`setup-ubuntu.sh` 已把该目录权限交给 `newbee` 用户，无需额外上传图片。
+
 ## 5. 验证
 
 ```bash

@@ -136,7 +136,11 @@ export DB_PASSWORD=your-password
 mvn spring-boot:run
 ```
 
+首次启动会自动把 classpath 里的 `upload.zip` 解压到项目根目录的 `./upload/`，705 张演示商品图片无需手动拷贝。
+
 打开 <http://localhost:28089/ai/chat>，首页导航栏也新增了「AI 导购」入口。
+
+> 如果你导入的是旧数据库，执行一次 `docs/fix-images.sql` 把历史数据里的失效外链图片换成本地资源。
 
 ### 6. 验证
 
@@ -147,7 +151,7 @@ curl http://localhost:28089/ai/status
 # 同步问答
 curl -X POST http://localhost:28089/ai/chat \
   -H "Content-Type: application/json" \
-  -d '{"message":"推荐一款 300 元以内的机械键盘","sessionId":"demo-1"}'
+  -d '{"message":"推荐一款 500 元以内的蓝牙耳机","sessionId":"demo-1"}'
 
 # SSE 流式问答
 curl -N "http://localhost:28089/ai/chat/stream?message=hello&sessionId=demo-2"

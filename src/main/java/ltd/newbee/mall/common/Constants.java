@@ -17,7 +17,8 @@ package ltd.newbee.mall.common;
  */
 public class Constants {
     //public final static String FILE_UPLOAD_DIC = "/opt/image/upload/";//上传文件的默认url前缀，根据部署设置自行修改
-    public final static String FILE_UPLOAD_DIC = "D:\\upload\\";//上传文件的默认url前缀，根据部署设置自行修改
+    // 相对工作目录，Windows/Linux/容器通用；应用启动时会从 upload.zip 自动解压演示图片
+    public final static String FILE_UPLOAD_DIC = "./upload/";//上传文件的默认url前缀，根据部署设置自行修改
 
     public final static int INDEX_CAROUSEL_NUMBER = 5;//首页轮播图数量(可根据自身需求修改)
 

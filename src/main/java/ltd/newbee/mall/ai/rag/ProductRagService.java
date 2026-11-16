@@ -153,7 +153,8 @@ public class ProductRagService {
         return value.length() <= limit ? value : value.substring(0, limit);
     }
 
-    private String yuan(Integer cents) {
-        return cents == null ? "-" : String.format("%.2f", cents / 100.0);
+    private String yuan(Integer price) {
+        // newbee-mall 的价格字段单位是元，不是分
+        return price == null ? "-" : price + ".00";
     }
 }

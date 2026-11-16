@@ -44,7 +44,7 @@ class ShoppingToolsTest {
     @Test
     void searchGoodsFallsBackToKeywordAndFormatsLink() {
         when(ragService.searchGoodsIds(anyString(), anyInt())).thenReturn(List.of());
-        NewBeeMallGoods goods = goods(1L, "机械键盘", 29900, 5, "青轴键盘");
+        NewBeeMallGoods goods = goods(1L, "机械键盘", 299, 5, "青轴键盘");
         when(productMapper.selectOnSale("键盘", 3)).thenReturn(List.of(goods));
 
         ShoppingTools tools = new ShoppingTools(goodsService, orderService, productMapper, ragService, properties, 42L);
@@ -77,7 +77,7 @@ class ShoppingToolsTest {
     void myOrdersAreFormattedForTheCurrentUser() {
         NewBeeMallOrderListVO order = new NewBeeMallOrderListVO();
         order.setOrderNo("202611150001");
-        order.setTotalPrice(19900);
+        order.setTotalPrice(199);
         order.setOrderStatusString("已支付");
         order.setCreateTime(new Date());
         PageResult pageResult = new PageResult(List.of(order), 1, 5, 1);

@@ -18,6 +18,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.file.Paths;
+
 @Configuration
 public class NeeBeeMallWebMvcConfigurer implements WebMvcConfigurer {
 
@@ -60,7 +62,12 @@ public class NeeBeeMallWebMvcConfigurer implements WebMvcConfigurer {
     }
 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/upload/**").addResourceLocations("file:" + Constants.FILE_UPLOAD_DIC);
-        registry.addResourceHandler("/goods-img/**").addResourceLocations("file:" + Constants.FILE_UPLOAD_DIC);
+        String uploadLocation = Paths.get(Constants.FILE_UPLOAD_DIC)
+                .toAbsolutePath().normalize().toUri().toString();
+        if (!uploadLocation.endsWith("/")) {
+            uploadLocation += "/";
+        }
+        registry.addResourceHandler("/upload/**").addResourceLocations(uploadLocation);
+        registry.addResourceHandler("/goods-img/**").addResourceLocations(uploadLocation);
     }
 }
